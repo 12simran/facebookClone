@@ -23,8 +23,8 @@ const create = function(req, res){
         return res.redirect('back');
     }
 
-    User.findOne({email:req.body.email}, function(err, user){
-        if(err){console.log(err); return}
+    User.findOne({email: req.body.email}, function(err, user){
+        if(err){req.flash('error', err); return}
 
         if (!user){
             User.create(req.body, function(err, user){
@@ -39,21 +39,19 @@ const create = function(req, res){
 
     });
 }
-const createSession =  function (req,res){
+const createSession = function (req,res) {
+    //action pending
     User.findOne({email: req.body.email}, function(err, user){
-        if(err){console.log(err); return}
+        if(err){req.flash('error', err); return}
         if(user){
             if(user.password != req.body.password){
                 return res.redirect('back');
             }
-            
             res.cookie('user_id',user.id)
             return res.redirect('/users/profile');
         } else{
             return res.redirect('/users/sign-in');
         }
-   
-})
+    })
 }
-
 module.exports = {profile,signUp,signIn,create,createSession}
