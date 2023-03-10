@@ -17,32 +17,30 @@ const signIn =  function (req,res){
         title:"Signup"
     })
 }
-const create = function(req, res){
+const create = async function(req, res){
     if (req.body.password != req.body.confirm_password){
-        req.flash('error', 'Passwords do not match');
+       
         return res.redirect('back');
     }
 
-    User.findOne({email: req.body.email}, function(err, user){
-        if(err){req.flash('error', err); return}
-
-        if (!user){
-            User.create(req.body, function(err, user){
-                if(err){req.flash('error', err); return}
-
-                return res.redirect('/users/sign-in');
-            })
-        }else{
-            req.flash('success', 'You have signed up, login to continue!');
+     let user = await User.findOne({email: req.body.email})
+     
+     .then((user)=>{console.log(user);})
+       
+    
+       if(!user){ 
+             let signUser = await User.create(req.body)
+             .then((signUser)=>{console.log(signUser);})
+           
             return res.redirect('back');
         }
 
-    });
-}
-const createSession = function (req,res) {
+    }
+
+const login = function (req,res) {
     //action pending
     User.findOne({email: req.body.email}, function(err, user){
-        if(err){req.flash('error', err); return}
+        if(err){console.log(err);return}
         if(user){
             if(user.password != req.body.password){
                 return res.redirect('back');
@@ -54,4 +52,4 @@ const createSession = function (req,res) {
         }
     })
 }
-module.exports = {profile,signUp,signIn,create,createSession}
+module.exports = {profile,signUp,signIn,create,login}
