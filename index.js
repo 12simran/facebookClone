@@ -31,6 +31,7 @@ app.use(passport.setAuthenticatedUser);
 
 app.use(express.urlencoded()) // form submit 
 app.use(cookieParser())
+app.use(express.static('assets'))
 const router = require('./routes/')
 app.use(expressLayouts)
 app.use('/', router)
